@@ -3,7 +3,7 @@ import numpy as np
 from tkinter import filedialog
 from tkinter import *
 from PIL import Image, ImageTk
-from filter_functions import *
+from filter_functions import apply_black_and_white, apply_sepia
 
 
 CANVAS_HEIGHT = 500
@@ -33,16 +33,12 @@ class ImageFilterApp:
         # self.bw_button.pack(side=LEFT)
 
         self.sepia_button = Button(
-            self.root, text="Sepia", command=lambda: apply_sepia(self.canvas, self.original_image))
+            self.root, text="Sepia", command=lambda: apply_sepia(self.original_image))
         self.sepia_button.pack(side=LEFT, padx=10)
 
         self.bw_button = Button(
-            self.root, text="Black & White", command=lambda: apply_black_and_white(self.canvas, self.original_image))
+            self.root, text="Black & White", command=lambda: apply_black_and_white(self.original_image))
         self.bw_button.pack(side=LEFT)
-
-        self.bright_button = Button(
-            self.root, text="Brighten", command=lambda: apply_brighten(self.canvas, self.original_image))
-        self.bright_button.pack(side=LEFT)
 
         self.load_button = Button(
             self.root, text="Load Image", command=self.load_image)
@@ -67,6 +63,22 @@ class ImageFilterApp:
                     self.original_image, None, fx=scale, fy=scale)
 
             self.display_image(self.original_image)
+
+    # def apply_sepia(self):
+    #     if self.original_image is not None:
+    #         kernel = np.array([[0.393, 0.769, 0.189],
+    #                            [0.349, 0.686, 0.168],
+    #                            [0.272, 0.534, 0.131]])
+    #         self.filtered_image = cv2.transform(self.original_image, kernel)
+    #         self.display_image(self.filtered_image)
+
+    # def apply_black_and_white(self):
+    #     if self.original_image is not None:
+    #         self.filtered_image = cv2.cvtColor(
+    #             self.original_image, cv2.COLOR_RGB2GRAY)
+    #         self.filtered_image = cv2.cvtColor(
+    #             self.filtered_image, cv2.COLOR_GRAY2RGB)
+    #         self.display_image(self.filtered_image)
 
     def display_image(self, image):
         image = Image.fromarray(image)
