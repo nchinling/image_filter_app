@@ -46,6 +46,21 @@ def apply_brighten(canvas, original_image):
         return display_image(canvas, brightened_image_uint8)
 
 
+def apply_pixelate(canvas, image, pixel_size=40):
+    # Get the dimensions of the image
+    height, width = image.shape[:2]
+
+    # Resize the image to a smaller size
+    small_image = cv2.resize(
+        image, (pixel_size, pixel_size), interpolation=cv2.INTER_LINEAR)
+
+    # Resize the small image back to the original size
+    pixelated_image = cv2.resize(
+        small_image, (width, height), interpolation=cv2.INTER_NEAREST)
+
+    return display_image(canvas, pixelated_image)
+
+
 def apply_cartoonisation(canvas, original_image):
     if original_image is not None:
         # Convert image to grayscale
@@ -63,42 +78,44 @@ def apply_cartoonisation(canvas, original_image):
         return display_image(canvas, cartoon_image)
 
 
-def apply_oil_painting_effect(canvas, original_image):
-    radius = 10
-    intensity = 7
+def apply_oil_painting_effect(canvas, original_image, radius=8, intensity=7):
     if original_image is not None:
-        # Convert image to grayscale
-        gray_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
-        # Apply median blur to the grayscale image
-        blurred_image = cv2.medianBlur(gray_image, 7)
-
-        # Initialize output image
-        oil_painting_image = np.zeros_like(original_image)
+        # Initialize output image as a copy of the original image
+        oil_painting_image = original_image.copy()
 
         # Apply oil painting effect
         for y in range(0, original_image.shape[0] - radius, radius):
             for x in range(0, original_image.shape[1] - radius, radius):
-                roi = blurred_image[y:y+radius, x:x+radius]
-                median = np.median(roi)
-                oil_painting_image[y:y+radius, x:x+radius, 0][roi >=
-                                                              median-intensity] = roi[roi >= median-intensity]
-                oil_painting_image[y:y+radius, x:x+radius, 1][roi >=
-                                                              median-intensity] = roi[roi >= median-intensity]
-                oil_painting_image[y:y+radius, x:x+radius, 2][roi >=
-                                                              median-intensity] = roi[roi >= median-intensity]
-                oil_painting_image[y:y+radius, x:x+radius,
-                                   0][roi < median-intensity] = median
-                oil_painting_image[y:y+radius, x:x+radius,
-                                   1][roi < median-intensity] = median
-                oil_painting_image[y:y+radius, x:x+radius,
-                                   2][roi < median-intensity] = median
+                roi = original_image[y:y+radius, x:x+radius]
 
-        # return oil_painting_image
-        return display_image(canvas, oil_painting_image)
+                for c in range(3):  # Iterate over color channels (B, G, R)
+                    median = np.median(roi[:, :, c])
+                    oil_painting_image[y:y+radius, x:x+radius, c][roi[:, :, c] >=
+                                                                  median-intensity] = roi[:, :, c][roi[:, :, c] >= median-intensity]
+                    oil_painting_image[y:y+radius, x:x+radius,
+                                       c][roi[:, :, c] < median-intensity] = median
+
+    return display_image(canvas, oil_painting_image)
 
 
 def display_image(canvas, image):
-    image = Image.fromarray(image)
-    image = ImageTk.PhotoImage(image)
-    canvas.image = image
-    canvas.create_image(0, 0, anchor='nw', image=image)
+    # Convert numpy array to PIL Image
+    image_pil = Image.fromarray(image)
+
+    # Convert PIL Image to PhotoImage
+    image_tk = ImageTk.PhotoImage(image_pil)
+    canvas_width = canvas.winfo_width()
+    canvas_height = canvas.winfo_height()
+
+    canvas.image = image_tk
+
+    # Get the dimensions of the image
+    image_width = image_pil.width
+    image_height = image_pil.height
+
+    # Calculate coordinates to place the image at the center of the canvas
+    x = (canvas_width - image_width) // 2
+    y = (canvas_height - image_height) // 2
+
+    # Create image on canvas
+    canvas.create_image(x, y, anchor='nw', image=image_tk)

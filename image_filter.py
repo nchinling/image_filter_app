@@ -44,6 +44,10 @@ class ImageFilterApp:
             self.root, text="Brighten", command=lambda: apply_brighten(self.canvas, self.original_image))
         self.bright_button.pack(side=LEFT, padx=10, pady=10)
 
+        self.pixelate_button = Button(
+            self.root, text="Pixelate", command=lambda: apply_pixelate(self.canvas, self.original_image))
+        self.pixelate_button.pack(side=LEFT, padx=10, pady=10)
+
         self.load_button = Button(
             self.root, text="Load Image", command=self.load_image)
         self.load_button.pack(side=LEFT, padx=10, pady=10)
@@ -89,11 +93,33 @@ class ImageFilterApp:
         self.canvas.delete("all")
         self.display_image(self.original_image)
 
+    # def display_image(self, image):
+    #     image = Image.fromarray(image)
+    #     image = ImageTk.PhotoImage(image)
+    #     self.canvas.image = image
+    #     self.canvas.create_image(0, 0, anchor='nw', image=image)
+
     def display_image(self, image):
-        image = Image.fromarray(image)
-        image = ImageTk.PhotoImage(image)
-        self.canvas.image = image
-        self.canvas.create_image(0, 0, anchor='nw', image=image)
+        # Convert numpy array to PIL Image
+        image_pil = Image.fromarray(image)
+
+        # Convert PIL Image to PhotoImage
+        image_tk = ImageTk.PhotoImage(image_pil)
+        canvas_width = self.canvas.winfo_width()
+        canvas_height = self.canvas.winfo_height()
+
+        self.canvas.image = image_tk
+
+        # Get the dimensions of the image
+        image_width = image_pil.width
+        image_height = image_pil.height
+
+        # Calculate coordinates to place the image at the center of the canvas
+        x = (canvas_width - image_width) // 2
+        y = (canvas_height - image_height) // 2
+
+        # Create image on canvas
+        self.canvas.create_image(x, y, anchor='nw', image=image_tk)
 
 # root = Tk()
 # app = ImageFilterApp(root)
