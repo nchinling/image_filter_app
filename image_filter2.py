@@ -84,7 +84,18 @@ class ImageFilterApp:
         image = Image.fromarray(image)
         image = ImageTk.PhotoImage(image)
         self.canvas.image = image
-        self.canvas.create_image(0, 0, anchor='nw', image=image)
+        canvas_width = self.canvas.winfo_width()
+        canvas_height = self.canvas.winfo_height()
+
+        # Calculate the coordinates to position the image at the center of the canvas
+        x_center = (canvas_width - image.width()) // 2
+        y_center = (canvas_height - image.height()) // 2
+
+    # Clear previous content from the canvas
+        self.canvas.delete("all")
+        self.canvas.create_image(
+            x_center, y_center, anchor=CENTER, image=image)
+        # self.canvas.create_image(0, 0, anchor='nw', image=image)
 
 # root = Tk()
 # app = ImageFilterApp(root)

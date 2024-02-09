@@ -12,6 +12,12 @@ pip install opencv-python-headless
 pip install numpy
 pip install Pillow
 
+## Filter types
+- sepia
+- b/w
+- brighten
+- blur: Gaussian blur
+
 
 python image_filter_app.py
 

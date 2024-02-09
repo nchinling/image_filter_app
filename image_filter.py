@@ -34,19 +34,36 @@ class ImageFilterApp:
 
         self.sepia_button = Button(
             self.root, text="Sepia", command=lambda: apply_sepia(self.canvas, self.original_image))
-        self.sepia_button.pack(side=LEFT, padx=10)
+        self.sepia_button.pack(side=LEFT, padx=10, pady=10)
 
         self.bw_button = Button(
             self.root, text="Black & White", command=lambda: apply_black_and_white(self.canvas, self.original_image))
-        self.bw_button.pack(side=LEFT)
+        self.bw_button.pack(side=LEFT, padx=10, pady=10)
 
         self.bright_button = Button(
             self.root, text="Brighten", command=lambda: apply_brighten(self.canvas, self.original_image))
-        self.bright_button.pack(side=LEFT)
+        self.bright_button.pack(side=LEFT, padx=10, pady=10)
 
         self.load_button = Button(
             self.root, text="Load Image", command=self.load_image)
-        self.load_button.pack(side=LEFT, padx=10)
+        self.load_button.pack(side=LEFT, padx=10, pady=10)
+
+        self.load_button = Button(
+            self.root, text="Reset", command=self.reset_image)
+        self.load_button.pack(side=LEFT, padx=10, pady=10)
+
+        self.blur_button = Button(
+            self.root, text="Blur", command=lambda: apply_blur(self.canvas, self.original_image))
+        # self.blur_button.configure(width=20, height=2)
+        self.blur_button.pack(side=LEFT, padx=10, pady=10)
+
+        self.bright_button = Button(
+            self.root, text="Cartoon", command=lambda: apply_cartoonisation(self.canvas, self.original_image))
+        self.bright_button.pack(side=LEFT, padx=10, pady=10)
+
+        self.bright_button = Button(
+            self.root, text="Oil Paint", command=lambda: apply_oil_painting_effect(self.canvas, self.original_image))
+        self.bright_button.pack(side=LEFT, padx=10, pady=10)
 
     def load_image(self):
         file_path = filedialog.askopenfilename()
@@ -73,6 +90,13 @@ class ImageFilterApp:
         image = ImageTk.PhotoImage(image)
         self.canvas.image = image
         self.canvas.create_image(0, 0, anchor='nw', image=image)
+
+    def reset_image(self):
+        # Clear the canvas
+        self.canvas.delete("all")
+        # Set original_image to None
+        self.display_image(self.original_image)
+
 
 # root = Tk()
 # app = ImageFilterApp(root)
