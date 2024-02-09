@@ -4,70 +4,53 @@ from tkinter import filedialog
 from tkinter import *
 from PIL import Image, ImageTk
 from filter_functions import *
+import os
 
 
-CANVAS_HEIGHT = 500
-CANVAS_WIDTH = 500
+CANVAS_HEIGHT = 700
+CANVAS_WIDTH = 700
 
 
 class ImageFilterApp:
     def __init__(self, root):
-
         self.root = root
         self.root.title("Image Filter App")
-        self.label = Label(self.root, text="This is cool!").pack()
 
         self.original_image = None
         self.filtered_image = None
+        self.filename = None
 
-        self.canvas = Canvas(self.root, width=CANVAS_WIDTH,
-                             height=CANVAS_HEIGHT)
-        self.canvas.pack()
+        self.label = Label(self.root, text="", bg="#D04848")
+        self.label.pack(side="top")
 
-        # self.sepia_button = Button(
-        #     self.root, text="Sepia", command=self.apply_sepia)
-        # self.sepia_button.pack(side=LEFT, padx=10)
+        self.frame = Frame(self.root, bg="#D04848")
+        self.frame.pack(fill="both", expand=True)
+        self.canvas = Canvas(self.frame, width=CANVAS_WIDTH,
+                             height=CANVAS_HEIGHT, bg="#D04848", highlightthickness=0)
+        self.canvas.pack(fill="both", expand=True)
 
-        # self.bw_button = Button(
-        #     self.root, text="Black & White", command=self.apply_black_and_white)
-        # self.bw_button.pack(side=LEFT)
+        self.create_button("Sepia", lambda: apply_sepia(
+            self.canvas, self.original_image))
+        self.create_button("Black & White", lambda: apply_black_and_white(
+            self.canvas, self.original_image))
+        self.create_button("Brighten", lambda: apply_brighten(
+            self.canvas, self.original_image))
+        self.create_button("Pixelate", lambda: apply_pixelate(
+            self.canvas, self.original_image))
+        self.create_button("Load Image", self.load_image)
+        self.create_button("Reset", self.reset_image)
+        self.create_button("Blur", lambda: apply_blur(
+            self.canvas, self.original_image))
+        self.create_button("Cartoon", lambda: apply_cartoonisation(
+            self.canvas, self.original_image))
+        self.create_button("Oil Paint", lambda: apply_oil_painting_effect(
+            self.canvas, self.original_image))
 
-        self.sepia_button = Button(
-            self.root, text="Sepia", command=lambda: apply_sepia(self.canvas, self.original_image))
-        self.sepia_button.pack(side=LEFT, padx=10, pady=10)
-
-        self.bw_button = Button(
-            self.root, text="Black & White", command=lambda: apply_black_and_white(self.canvas, self.original_image))
-        self.bw_button.pack(side=LEFT, padx=10, pady=10)
-
-        self.bright_button = Button(
-            self.root, text="Brighten", command=lambda: apply_brighten(self.canvas, self.original_image))
-        self.bright_button.pack(side=LEFT, padx=10, pady=10)
-
-        self.pixelate_button = Button(
-            self.root, text="Pixelate", command=lambda: apply_pixelate(self.canvas, self.original_image))
-        self.pixelate_button.pack(side=LEFT, padx=10, pady=10)
-
-        self.load_button = Button(
-            self.root, text="Load Image", command=self.load_image)
-        self.load_button.pack(side=LEFT, padx=10, pady=10)
-
-        self.load_button = Button(
-            self.root, text="Reset", command=self.reset_image)
-        self.load_button.pack(side=LEFT, padx=10, pady=10)
-
-        self.blur_button = Button(
-            self.root, text="Blur", command=lambda: apply_blur(self.canvas, self.original_image))
-        # self.blur_button.configure(width=20, height=2)
-        self.blur_button.pack(side=LEFT, padx=10, pady=10)
-
-        self.bright_button = Button(
-            self.root, text="Cartoon", command=lambda: apply_cartoonisation(self.canvas, self.original_image))
-        self.bright_button.pack(side=LEFT, padx=10, pady=10)
-
-        self.bright_button = Button(
-            self.root, text="Oil Paint", command=lambda: apply_oil_painting_effect(self.canvas, self.original_image))
-        self.bright_button.pack(side=LEFT, padx=10, pady=10)
+    def create_button(self, text, command):
+        button = Button(
+            self.root, text=text, command=command, fg="brown", font=("Helvetica", 20), width=8, height=40
+        )
+        button.pack(side="left", padx=10, pady=10)
 
     def load_image(self):
         file_path = filedialog.askopenfilename()
@@ -76,6 +59,9 @@ class ImageFilterApp:
             self.original_image = cv2.imread(file_path)
             self.original_image = cv2.cvtColor(
                 self.original_image, cv2.COLOR_BGR2RGB)
+
+            self.filename = os.path.basename(file_path)
+            self.update_label_text()
 
             # Resize the image to fit within the canvas
             canvas_width = CANVAS_WIDTH
@@ -88,6 +74,9 @@ class ImageFilterApp:
                     self.original_image, None, fx=scale, fy=scale)
 
             self.display_image(self.original_image)
+
+    def update_label_text(self):
+        self.label.config(text=self.filename)
 
     def reset_image(self):
         self.canvas.delete("all")
@@ -127,6 +116,7 @@ class ImageFilterApp:
 
 
 window = Tk()
+window.configure(bg="#D04848")
 app = ImageFilterApp(window)
 # pack is used to show the object in the window
 # label = Label(

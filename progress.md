@@ -5,4 +5,6 @@
 
 ## 10 Feb
 - load original image
+- improved aesthetics
+- refactored button code
 
