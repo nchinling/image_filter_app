@@ -85,18 +85,15 @@ class ImageFilterApp:
 
             self.display_image(self.original_image)
 
+    def reset_image(self):
+        self.canvas.delete("all")
+        self.display_image(self.original_image)
+
     def display_image(self, image):
         image = Image.fromarray(image)
         image = ImageTk.PhotoImage(image)
         self.canvas.image = image
         self.canvas.create_image(0, 0, anchor='nw', image=image)
-
-    def reset_image(self):
-        # Clear the canvas
-        self.canvas.delete("all")
-        # Set original_image to None
-        self.display_image(self.original_image)
-
 
 # root = Tk()
 # app = ImageFilterApp(root)
