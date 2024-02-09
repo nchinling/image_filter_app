@@ -39,6 +39,8 @@ class ImageFilterApp:
             self.canvas, self.original_image))
         self.create_button("Load Image", self.load_image)
         self.create_button("Reset", self.reset_image)
+        # self.create_button("Rotate", lambda: apply_rotate(
+        #     self.canvas, self.original_image))
         self.create_button("Blur", lambda: apply_blur(
             self.canvas, self.original_image))
         self.create_button("Cartoon", lambda: apply_cartoonisation(
@@ -48,7 +50,7 @@ class ImageFilterApp:
 
     def create_button(self, text, command):
         button = Button(
-            self.root, text=text, command=command, fg="brown", font=("Helvetica", 20), width=8, height=40
+            self.root, text=text, command=command, fg="#FF004D", font=("Helvetica", 20), width=8, height=40
         )
         button.pack(side="left", padx=10, pady=10)
 

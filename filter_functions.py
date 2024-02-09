@@ -46,13 +46,13 @@ def apply_brighten(canvas, original_image):
         return display_image(canvas, brightened_image_uint8)
 
 
-def apply_pixelate(canvas, image, pixel_size=40):
+def apply_pixelate(canvas, original_image, pixel_size=40):
     # Get the dimensions of the image
-    height, width = image.shape[:2]
+    height, width = original_image.shape[:2]
 
     # Resize the image to a smaller size
     small_image = cv2.resize(
-        image, (pixel_size, pixel_size), interpolation=cv2.INTER_LINEAR)
+        original_image, (pixel_size, pixel_size), interpolation=cv2.INTER_LINEAR)
 
     # Resize the small image back to the original size
     pixelated_image = cv2.resize(
@@ -60,6 +60,22 @@ def apply_pixelate(canvas, image, pixel_size=40):
 
     return display_image(canvas, pixelated_image)
 
+
+# def apply_cartoonisation(canvas, original_image):
+#     if original_image is not None:
+#         # Convert image to grayscale
+#         gray_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
+#         # Apply median blur to smooth image
+#         blurred_image = cv2.medianBlur(gray_image, 7)
+#         # Detect edges using Canny edge detector
+#         edges = cv2.Canny(blurred_image, 100, 200)
+#         # Create a binary mask for the edges
+#         _, mask = cv2.threshold(edges, 70, 255, cv2.THRESH_BINARY_INV)
+#         # Combine the edges with the original image using bitwise and
+#         cartoon_image = cv2.bitwise_and(
+#             original_image, original_image, mask=mask)
+#         # return cartoon_image
+#         return display_image(canvas, cartoon_image)
 
 def apply_cartoonisation(canvas, original_image):
     if original_image is not None:
@@ -71,9 +87,10 @@ def apply_cartoonisation(canvas, original_image):
         edges = cv2.Canny(blurred_image, 100, 200)
         # Create a binary mask for the edges
         _, mask = cv2.threshold(edges, 70, 255, cv2.THRESH_BINARY_INV)
-        # Combine the edges with the original image using bitwise and
-        cartoon_image = cv2.bitwise_and(
-            original_image, original_image, mask=mask)
+        # Create a blank image to fill with ink effect
+        ink_effect = cv2.cvtColor(blurred_image, cv2.COLOR_GRAY2BGR)
+        # Combine the edges with the ink effect using bitwise and
+        cartoon_image = cv2.bitwise_and(ink_effect, ink_effect, mask=mask)
         # return cartoon_image
         return display_image(canvas, cartoon_image)
 
@@ -96,6 +113,17 @@ def apply_oil_painting_effect(canvas, original_image, radius=8, intensity=7):
                                        c][roi[:, :, c] < median-intensity] = median
 
     return display_image(canvas, oil_painting_image)
+
+
+def apply_rotate(canvas, original_image, angle=90):
+
+    # Rotate the original image by the specified angle
+    rows, cols, _ = original_image.shape
+    rotation_matrix = cv2.getRotationMatrix2D((cols / 2, rows / 2), angle, 1)
+    rotated_image = cv2.warpAffine(
+        original_image, rotation_matrix, (cols, rows))
+
+    return display_image(canvas, rotated_image)
 
 
 def display_image(canvas, image):
