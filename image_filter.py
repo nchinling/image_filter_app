@@ -87,6 +87,7 @@ class ImageFilterApp:
         self.display_image(self.original_image)
 
     def display_image(self, image):
+
         # Convert numpy array to PIL Image
         image_pil = Image.fromarray(image)
 

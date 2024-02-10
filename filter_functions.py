@@ -105,6 +105,7 @@ def apply_oil_painting_effect(canvas, original_image, radius=8, intensity=7):
 
 
 def display_image(canvas, image):
+
     # Convert numpy array to PIL Image
     image_pil = Image.fromarray(image)
 
