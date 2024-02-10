@@ -37,20 +37,22 @@ class ImageFilterApp:
             self.canvas, self.original_image))
         self.create_button("Pixelate", lambda: apply_pixelate(
             self.canvas, self.original_image))
+        self.create_button("Invert", lambda: apply_invert(
+            self.canvas, self.original_image))
         self.create_button("Load Image", self.load_image)
         self.create_button("Reset", self.reset_image)
-        # self.create_button("Rotate", lambda: apply_rotate(
-        #     self.canvas, self.original_image))
+        self.create_button("Emboss", lambda: apply_emboss(
+            self.canvas, self.original_image))
         self.create_button("Blur", lambda: apply_blur(
             self.canvas, self.original_image))
-        self.create_button("Cartoon", lambda: apply_cartoonisation(
+        self.create_button("Ink", lambda: apply_ink(
             self.canvas, self.original_image))
         self.create_button("Oil Paint", lambda: apply_oil_painting_effect(
             self.canvas, self.original_image))
 
     def create_button(self, text, command):
         button = Button(
-            self.root, text=text, command=command, fg="#FF004D", font=("Helvetica", 20), width=8, height=40
+            self.root, text=text, command=command, fg="#FF004D", font=("Helvetica", 15), width=6, height=40
         )
         button.pack(side="left", padx=10, pady=10)
 
@@ -84,12 +86,6 @@ class ImageFilterApp:
         self.canvas.delete("all")
         self.display_image(self.original_image)
 
-    # def display_image(self, image):
-    #     image = Image.fromarray(image)
-    #     image = ImageTk.PhotoImage(image)
-    #     self.canvas.image = image
-    #     self.canvas.create_image(0, 0, anchor='nw', image=image)
-
     def display_image(self, image):
         # Convert numpy array to PIL Image
         image_pil = Image.fromarray(image)
@@ -112,15 +108,8 @@ class ImageFilterApp:
         # Create image on canvas
         self.canvas.create_image(x, y, anchor='nw', image=image_tk)
 
-# root = Tk()
-# app = ImageFilterApp(root)
-# root.mainloop()
-
 
 window = Tk()
 window.configure(bg="#D04848")
 app = ImageFilterApp(window)
-# pack is used to show the object in the window
-# label = Label(
-#     window, text="Welcome to the best Image Filter app!").pack()
 window.mainloop()
